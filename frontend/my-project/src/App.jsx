@@ -9,7 +9,7 @@ import Layout from "./components/Layout.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
-import GitHubConnect from "./pages/GitHubConnect.jsx";
+import GitHubConnect from "./pages/GithubConnect.jsx";
 import Repositories from "./pages/Repositories.jsx";
 import RepositoryDetails from "./pages/RepositoryDetails.jsx";
 import Profile from "./pages/Profile.jsx";
