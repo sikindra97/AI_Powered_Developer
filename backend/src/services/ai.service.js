@@ -43,11 +43,7 @@ ${analysis?.codeSmells ?? "Not available"}
 
 SOURCE CODE
 ==================================================
-
 ${code}
-
-==================================================
-
 IMPORTANT RULES:
 
 1. Analyze ONLY the supplied source code.
@@ -203,13 +199,6 @@ const generateAIInsight = async ({
     analysis,
     question
   });
-
-  console.log("Sending request to Groq");
-  console.log("Model:", model);
-  console.log("API URL:", GROQ_API_URL);
-  console.log("Code length:", code.length);
-  console.log("Question:", question);
-
   const response = await fetch(GROQ_API_URL, {
     method: "POST",
     headers: {
@@ -238,9 +227,6 @@ const generateAIInsight = async ({
   });
 
   const responseText = await response.text();
-
-  console.log("Groq response status:", response.status);
-  console.log("Groq response OK:", response.ok);
 
   if (!response.ok) {
     let message =

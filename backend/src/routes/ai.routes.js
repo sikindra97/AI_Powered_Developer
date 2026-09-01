@@ -9,9 +9,6 @@ import {
 } from "../controllers/ai.controller.js";
 
 const router = express.Router();
-
-console.log("ai.routes.js loaded");
-
 router.post("/ask", protect, analyzeWithAI);
 
 router.get("/:repositoryId", protect, getAIInsights);

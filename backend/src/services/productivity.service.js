@@ -167,21 +167,6 @@ const calculateProductivity = async ({
       $lte: endDate
     }
   };
-
-  console.log("\n======================================");
-  console.log("PRODUCTIVITY CALCULATION");
-  console.log("User:", userId.toString());
-  console.log(
-    "Repository:",
-    repositoryId
-      ? repositoryId.toString()
-      : "ALL REPOSITORIES"
-  );
-  console.log("Period:", period);
-  console.log("Start:", startDate.toISOString());
-  console.log("End:", endDate.toISOString());
-  console.log("======================================");
-
   const [
     commits,
     pullRequests,
@@ -193,38 +178,7 @@ const calculateProductivity = async ({
     Issue.find(issueFilter).lean(),
     CodeAnalysis.find(analysisFilter).lean()
   ]);
-
-  console.log("Commits found:", commits.length);
-  console.log(
-    "Pull Requests found:",
-    pullRequests.length
-  );
-  console.log("Issues found:", issues.length);
-  console.log(
-    "Code analyses found:",
-    analyses.length
-  );
-
-  if (analyses.length > 0) {
-    console.log("CODE ANALYSIS RECORDS:");
-
-    analyses.forEach((analysis, index) => {
-      console.log(`Analysis ${index + 1}:`, {
-        id: analysis._id,
-        repositoryId: analysis.repositoryId,
-        filePath: analysis.filePath,
-        analysisStatus: analysis.analysisStatus,
-        analyzedAt: analysis.analyzedAt,
-        qualityScore: analysis.qualityScore,
-        securityScore: analysis.securityScore,
-        maintainabilityScore:
-          analysis.maintainabilityScore,
-        readabilityScore:
-          analysis.readabilityScore
-      });
-    });
-  }
-
+  
   const totalCommits = commits.length;
 
   const activeCodingDays =
@@ -250,16 +204,6 @@ const calculateProductivity = async ({
 
   const codeQuality =
     getAverageCodeQuality(analyses);
-
-  console.log("AVERAGE CODE QUALITY:", {
-    qualityScore: codeQuality.qualityScore,
-    securityScore: codeQuality.securityScore,
-    maintainabilityScore:
-      codeQuality.maintainabilityScore,
-    readabilityScore:
-      codeQuality.readabilityScore
-  });
-
   const totalDays =
     period === "daily"
       ? 1
@@ -333,35 +277,6 @@ const calculateProductivity = async ({
       )
     }
   };
-
-  console.log("FINAL PRODUCTIVITY:");
-  console.log({
-    totalCommits,
-    totalPullRequests,
-    issuesOpened,
-    issuesClosed,
-    activeCodingDays,
-    codeQualityScore:
-      scores.codeQualityScore,
-    qualityScore: result.qualityScore,
-    securityScore: result.securityScore,
-    maintainabilityScore:
-      result.maintainabilityScore,
-    readabilityScore:
-      result.readabilityScore,
-    commitScore: scores.commitScore,
-    pullRequestScore:
-      scores.pullRequestScore,
-    issueScore: scores.issueScore,
-    consistencyScore:
-      scores.consistencyScore,
-    overallScore: scores.overallScore
-  });
-
-  console.log(
-    "======================================\n"
-  );
-
   return result;
 };
 

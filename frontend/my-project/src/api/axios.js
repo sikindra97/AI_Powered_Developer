@@ -1,9 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_BACKEND_URL ||
-    "http://localhost:5000/api",
+  baseURL:"http://localhost:5000/api",
 
   withCredentials: true,
 
@@ -11,34 +9,15 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-
-/*
-========================================================
-REQUEST INTERCEPTOR
-========================================================
-*/
-
+//request interceptor to add JWT token to headers
 api.interceptors.request.use(
   (config) => {
     const token =
       localStorage.getItem("token");
-
-    console.log(
-      "API:",
-      config.method?.toUpperCase(),
-      config.url
-    );
-
-    console.log(
-      "JWT exists:",
-      Boolean(token)
-    );
-
     if (token) {
       config.headers.Authorization =
         `Bearer ${token}`;
     }
-
     return config;
   },
 
@@ -47,12 +26,7 @@ api.interceptors.request.use(
   }
 );
 
-/*
-========================================================
-RESPONSE INTERCEPTOR
-========================================================
-*/
-
+//response interceptor to handle errors globally
 api.interceptors.response.use(
   (response) => {
     return response;
