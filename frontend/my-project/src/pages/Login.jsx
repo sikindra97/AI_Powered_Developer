@@ -308,7 +308,6 @@ export default function Login() {
   );
 }
 
-export default Login;
 
 const InputField = ({
   id,
@@ -355,3 +354,4 @@ const InputField = ({
 
     </div>
   </div>
+);
