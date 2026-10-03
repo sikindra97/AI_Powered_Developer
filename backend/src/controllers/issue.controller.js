@@ -111,7 +111,7 @@ const syncIssues = async (req, res) => {
         },
         issueData,
         {
-          new: true,
+          returnDocument: "after",
           upsert: true,
           setDefaultsOnInsert: true
         }

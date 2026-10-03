@@ -154,7 +154,38 @@ const getGithubProfile = async (req, res, next) => {
     next(error);
   }
 };
+const disconnectGithub = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $unset: {
+          githubId: 1,
+          githubUsername: 1,
+          githubAccessToken: 1,
+          avatarUrl: 1
+        }
+      },
+      {
+        returnDocument: "after"
+      }
+    );
 
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found."
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "GitHub account disconnected successfully."
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const getGithubRepositories = async (req, res, next) => {
   try {
     const user = await User.findById(
@@ -334,11 +365,11 @@ const getGithubIssues = async (req, res, next) => {
     next(error);
   }
 };
-
 export {
   githubLogin,
   githubCallback,
   connectGithub,
+  disconnectGithub,
   getGithubProfile,
   getGithubRepositories,
   getGithubRepository,

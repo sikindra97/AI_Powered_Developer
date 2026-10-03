@@ -62,7 +62,7 @@ const syncCommits = async (req, res) => {
         },
         commitData,
         {
-          new: true,
+         returnDocument: "after",
           upsert: true,
           setDefaultsOnInsert: true
         }

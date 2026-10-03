@@ -76,7 +76,7 @@ const syncPullRequests = async (req, res) => {
         },
         pullRequestData,
         {
-          new: true,
+           returnDocument: "after",
           upsert: true,
           setDefaultsOnInsert: true
         }

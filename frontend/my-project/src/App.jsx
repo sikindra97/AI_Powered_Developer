@@ -17,6 +17,7 @@ import Productivity from "./pages/Productivity.jsx";
 import Analysis from "./pages/Analysis.jsx";
 import AIAssistant from "./pages/AIAssistant.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import Usage from "./pages/Usage.jsx";
 
 export default function App() {
   return (
@@ -83,9 +84,9 @@ export default function App() {
             path="/analysis"
             element={<Analysis />}
           />
-
+            <Route path="/usage" element={<Usage />} />
           <Route
-            path="/ai"
+            path="/ai-assistant"
             element={<AIAssistant />}
           />
 

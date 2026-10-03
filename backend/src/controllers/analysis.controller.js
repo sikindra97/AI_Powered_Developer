@@ -94,6 +94,7 @@ const getAnalysisFiles = async (req, res) => {
     }
 
     const user = await getGithubUser(req.user._id);
+
     const [owner, repoName] = repository.fullName.split("/");
 
     if (!owner || !repoName) {
@@ -158,6 +159,7 @@ const analyzeRepositoryCode = async (req, res) => {
     }
 
     const user = await getGithubUser(req.user._id);
+
     const [owner, repoName] = repository.fullName.split("/");
 
     if (!owner || !repoName) {
@@ -183,6 +185,7 @@ const analyzeRepositoryCode = async (req, res) => {
     }
 
     const language = getLanguageFromFile(file.path);
+
     const analysis = analyzeCode(file.code);
 
     const codeAnalysis = await CodeAnalysis.findOneAndUpdate(
@@ -210,7 +213,7 @@ const analyzeRepositoryCode = async (req, res) => {
         analyzedAt: new Date()
       },
       {
-        new: true,
+        returnDocument: "after",
         upsert: true,
         setDefaultsOnInsert: true
       }
@@ -221,12 +224,14 @@ const analyzeRepositoryCode = async (req, res) => {
       message: "Code analyzed successfully.",
       data: {
         ...codeAnalysis.toObject(),
+
         metrics: {
           totalLines: analysis.totalLines,
           blankLines: analysis.blankLines,
           commentLines: analysis.commentLines,
           codeLines: analysis.codeLines
         },
+
         issues: analysis.issues || []
       }
     });

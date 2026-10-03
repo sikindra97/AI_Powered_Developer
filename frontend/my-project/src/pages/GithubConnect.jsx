@@ -66,6 +66,8 @@ const GitHubConnect = () => {
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [connecting, setConnecting] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
   const [error, setError] = useState("");
 
   const status = searchParams.get("status");
@@ -95,10 +97,55 @@ const GitHubConnect = () => {
     };
 
     loadGithubProfile();
-  }, []);
+  }, [status]);
+
+  const handleConnectGithub = async () => {
+    try {
+      setConnecting(true);
+      setError("");
+
+      const response = await api.get("/github/login");
+
+      const githubUrl = response.data?.data?.url;
+
+      if (!githubUrl) {
+        throw new Error(
+          "GitHub OAuth URL was not returned by the server."
+        );
+      }
+
+      window.location.href = githubUrl;
+    } catch (error) {
+      setConnecting(false);
+
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Unable to connect GitHub."
+      );
+    }
+  };
 
   const handleDashboard = () => {
     navigate("/");
+  };
+
+  const handleDisconnectGithub = async () => {
+    try {
+      setDisconnecting(true);
+      setError("");
+
+      await api.delete("/github/disconnect");
+
+      setProfile(null);
+    } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          "Unable to disconnect GitHub."
+      );
+    } finally {
+      setDisconnecting(false);
+    }
   };
 
   if (loading) {
@@ -224,18 +271,29 @@ const GitHubConnect = () => {
 
               </div>
 
-              {/* Dashboard Button */}
+              {/* Dashboard and Disconnect Buttons */}
               <div className="border-t border-gray-100 px-6 py-5 sm:px-8">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={handleDashboard}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800"
+                  >
+                    Go to Dashboard
+                    <ArrowIcon />
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={handleDashboard}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800"
-                >
-                  Go to Dashboard
-                  <ArrowIcon />
-                </button>
-
+                  <button
+                    type="button"
+                    onClick={handleDisconnectGithub}
+                    disabled={disconnecting}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {disconnecting
+                      ? "Disconnecting..."
+                      : "Disconnect GitHub"}
+                  </button>
+                </div>
               </div>
             </>
           ) : (
@@ -252,17 +310,32 @@ const GitHubConnect = () => {
                 </h2>
 
                 <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-gray-500">
-                  Your GitHub account is currently not connected
-                  to the platform.
+                  Connect your GitHub account to access repositories,
+                  commits, pull requests and issues.
                 </p>
 
               </div>
 
+              {/* Connect Button */}
               <div className="border-t border-gray-100 bg-gray-50 px-6 py-5 sm:px-8">
-                <p className="text-center text-xs text-gray-500">
-                  Please connect your GitHub account from the
-                  application settings.
+
+                <button
+                  type="button"
+                  onClick={handleConnectGithub}
+                  disabled={connecting}
+                  className="mx-auto flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <GitHubIcon className="h-5 w-5" />
+
+                  {connecting
+                    ? "Connecting..."
+                    : "Connect GitHub"}
+                </button>
+
+                <p className="mt-3 text-center text-xs text-gray-500">
+                  You will be redirected to GitHub to authorize the application.
                 </p>
+
               </div>
             </>
           )}

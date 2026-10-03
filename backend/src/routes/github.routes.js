@@ -6,6 +6,7 @@ import {
   githubCallback,
   connectGithub,
   getGithubProfile,
+  disconnectGithub,
   getGithubRepositories,
   getGithubRepository,
   getGithubCommits,
@@ -22,7 +23,11 @@ router.get("/callback", githubCallback);
 router.post("/connect", protect, connectGithub);
 
 router.get("/profile", protect, getGithubProfile);
-
+router.delete(
+  "/disconnect",
+  protect,
+  disconnectGithub
+);
 router.get(
   "/repositories",
   protect,
